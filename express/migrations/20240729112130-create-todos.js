@@ -12,6 +12,7 @@ module.exports = {
       text: {
         type: DataTypes.TEXT,
         allowNull: false,
+        unique: true,
       },
       isCompleted: {
         type: DataTypes.BOOLEAN,

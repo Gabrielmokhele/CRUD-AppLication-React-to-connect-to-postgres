@@ -1,0 +1,13 @@
+* {
+  box-sizing: border-box;
+  margin: 50;
+
+}
+
+
+body {
+  background: #4f77ff;
+  background-image: url("./image.jfif");
+  image-resolution: 100%;
+  background-size: cover;
+}

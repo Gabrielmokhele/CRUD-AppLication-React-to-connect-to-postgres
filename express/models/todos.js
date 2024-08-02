@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       text: {
         type: DataTypes.TEXT,
         allowNull: false,
+        unique: true,
       },
       isCompleted: {
         type: DataTypes.BOOLEAN,

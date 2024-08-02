@@ -69,12 +69,13 @@ exports.updateTodo = async (req, res) => {
 
     const updateTodo = await todos.update(body, {
       where: { id: id },
+      returning: true,
     });
 
     return res.status(200).json({
       success: true,
       message: "todos updated",
-      data: updateTodo,
+      data: updateTodo[1][0],
     });
   } catch (error) {
     console.log(error);
