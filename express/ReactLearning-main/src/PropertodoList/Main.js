@@ -11,11 +11,13 @@ import {
   ListItemSecondaryAction,
   IconButton,
   Container,
-  Typography,
   Grid,
   Checkbox,
   TextField,
   Button,
+  Alert,
+  Paper,
+  Snackbar,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -27,6 +29,7 @@ const Main = () => {
   const getTodos = useQuery({
     queryKey: ["todos"],
     queryFn: () => axios.get("http://localhost:5000/todos"),
+    onError: () => handleOpenSnackbar("Failed to fetch todos", "error"),
   });
 
   const todos = getTodos.data?.data?.data.sort(
@@ -39,6 +42,7 @@ const Main = () => {
       queryClient.invalidateQueries(["todos"]);
       handleClickOpen("Todo Created Successfully");
     },
+    onError: () => handleOpenSnackbar("Failed to create todo", "error"),
   });
 
   const deleteTodos = useMutation({
@@ -47,6 +51,7 @@ const Main = () => {
       queryClient.invalidateQueries(["todos"]);
       handleClickOpen("Todo Deleted Successfully");
     },
+    onError: () => handleOpenSnackbar("Failed to delete todo", "error"),
   });
 
   const ToggleTodo = useMutation({
@@ -60,6 +65,7 @@ const Main = () => {
       queryClient.invalidateQueries(["todos"]);
       handleClickOpen("Toggled Successfully");
     },
+    onError: () => handleOpenSnackbar("Failed to toggle todo", "error"),
   });
 
   const [editText, setEditText] = useState("");
@@ -74,7 +80,25 @@ const Main = () => {
       setEditText("");
       handleClickOpen("Todo successfully updated!");
     },
+    onError: () => handleOpenSnackbar("Failed to update todo", "error"),
   });
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarContent, setSnackbarContent] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const handleOpenSnackbar = (message, severity = "error") => {
+    setSnackbarContent(message);
+    setSnackbarSeverity(severity);
+    setOpenSnackbar(true);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
   const [open, setOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
@@ -90,6 +114,7 @@ const Main = () => {
 
   const handleSubmit = (data) => {
     createTodos.mutate(data);
+    set;
   };
 
   const handleDelete = (id) => {
@@ -112,58 +137,62 @@ const Main = () => {
       <Container style={{ width: 800 }}>
         {getTodos.isLoading && <LinearProgress>...Is Loading</LinearProgress>}
         <CreateTodo handleSubmit={handleSubmit} />
-        <List>
-          {todos?.map((todo) => (
-            <ListItem
-              key={todo.id}
-              divider
-              style={{
-                backgroundColor: todo.isCompleted ? "#f0f0f0" : "inherit",
-                cursor: todo.isCompleted ? "default" : "pointer",
-              }}
-            >
-              <ListItemIcon>
-                <Checkbox
-                  checked={todo.isCompleted}
-                  edge="start"
-                  onChange={() => handleToggleTodo(todo)}
+        <br />
+        <Paper style={{ maxHeight: 500, overflow: "auto" }}>
+          <List>
+            {todos?.map((todo) => (
+              <ListItem
+                key={todo.id}
+                divider
+                style={{
+                  backgroundColor: todo.isCompleted ? "#f0f0f0" : "inherit",
+                  cursor: todo.isCompleted ? "default" : "pointer",
+                }}
+              >
+                <ListItemIcon>
+                  <Checkbox
+                    checked={todo.isCompleted}
+                    edge="start"
+                    onChange={() => handleToggleTodo(todo)}
+                  />
+                </ListItemIcon>
+                <ListItemText
+                  primary={todo.text}
+                  secondary={
+                    <>
+                      Status: {todo.isCompleted ? "Completed" : "Not Complete"}
+                      <br />
+                      Created At:{" "}
+                      {new Date(todo.createdAt).toLocaleDateString()}
+                    </>
+                  }
                 />
-              </ListItemIcon>
-              <ListItemText
-                primary={todo.text}
-                secondary={
-                  <>
-                    Status: {todo.isCompleted ? "Completed" : "Not Complete"}
-                    <br />
-                    Created At: {new Date(todo.createdAt).toLocaleDateString()}
-                  </>
-                }
-              />
-              <ListItemSecondaryAction>
-                <IconButton
-                  edge="end"
-                  aria-label="edit"
-                  onClick={() => {
-                    if (!todo.isCompleted) {
-                      setEditId(todo.id);
-                      setEditText(todo.text);
-                    }
-                  }}
-                  disabled={todo.isCompleted}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={() => handleDelete(todo.id)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="edit"
+                    onClick={() => {
+                      if (!todo.isCompleted) {
+                        setEditId(todo.id);
+                        setEditText(todo.text);
+                      }
+                    }}
+                    disabled={todo.isCompleted}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => handleDelete(todo.id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
         {editId && (
           <div style={{ marginTop: 20 }}>
             <TextField
@@ -189,6 +218,20 @@ const Main = () => {
         handleClose={handleClose}
         content={dialogContent}
       />
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarContent}
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 };

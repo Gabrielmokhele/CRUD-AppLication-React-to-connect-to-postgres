@@ -3,6 +3,7 @@ import { Routes, BrowserRouter, Route } from "react-router-dom";
 import Homepage from "./components/Homepage.js";
 import Main from "./PropertodoList/Main.js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "./App.css";
 
 const queryClient = new QueryClient();
 

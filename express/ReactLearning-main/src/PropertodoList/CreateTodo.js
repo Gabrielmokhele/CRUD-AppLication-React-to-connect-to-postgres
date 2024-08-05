@@ -4,7 +4,13 @@ import { Formik, Form, Field } from "formik";
 
 const CreateTodo = ({ handleSubmit }) => {
   return (
-    <Formik initialValues={{ text: "" }} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={{ text: "" }}
+      onSubmit={(values, { resetForm }) => {
+        handleSubmit(values);
+        resetForm();
+      }}
+    >
       {({ handleChange, handleBlur, values }) => (
         <Form>
           <Box sx={{ mt: 10 }}>
