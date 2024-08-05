@@ -90,33 +90,37 @@ Start the React Application
 cd client
 npm start
 ```
-Navigate to the Application
+#### Navigate to the Application
 Open your browser and go to http://localhost:3000.
 
 Backend
 Start the Server
-bash
-Copy code
+```bash
 cd server
 npm start
-API Endpoints
+```
+#### API Endpoints
 
 POST /api/login: Endpoint for user login.
 GET /api/todos: Fetch all todo items.
 POST /api/todos: Create a new todo item.
 PUT /api/todos/:id: Update a specific todo item.
 DELETE /api/todos/:id: Delete a specific todo item.
-Development
+
+## Development
 For development purposes, you may want to use tools such as nodemon for auto-reloading the backend server. Install it globally with:
 
-bash
-Copy code
+```bash
 npm install -g nodemon
+```
+
 Then, start the server with:
 
-bash
-Copy code
+```bash
 nodemon server.js
-Contributing
+```
+## Contributing
 Feel free to contribute by submitting pull requests or opening issues on GitHub. Your feedback and contributions are welcome!
+
+#### Author: Gabriel Mokhele
  
