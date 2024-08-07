@@ -136,6 +136,10 @@ const Main = () => {
       <Header />
       <Container style={{ width: 800 }}>
         {getTodos.isLoading && <LinearProgress>...Is Loading</LinearProgress>}
+        {deleteTodos.isLoading && (
+          <LinearProgress>...Is Loading</LinearProgress>
+        )}
+        {editTodos.isLoading && <LinearProgress>...Is Loading</LinearProgress>}
         <CreateTodo handleSubmit={handleSubmit} />
         <br />
         <Paper style={{ maxHeight: 500, overflow: "auto" }}>
@@ -177,7 +181,6 @@ const Main = () => {
                         setEditText(todo.text);
                       }
                     }}
-                    disabled={todo.isCompleted}
                   >
                     <EditIcon />
                   </IconButton>
